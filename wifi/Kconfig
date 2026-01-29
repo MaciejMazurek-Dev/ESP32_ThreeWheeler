@@ -1,0 +1,10 @@
+menu "Configure WiFi"
+
+    config WIFI_SSDI
+        string "WiFi SSDI"
+        default "defaultSSDI"
+
+    config WIFI_PASSWORD
+        string "WiFi Password"
+        default "defaultPASSWOR"
+endmenu
