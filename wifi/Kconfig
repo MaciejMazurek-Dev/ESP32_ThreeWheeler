@@ -6,5 +6,6 @@ menu "Configure WiFi"
 
     config WIFI_PASSWORD
         string "WiFi Password"
-        default "defaultPASSWOR"
+        default "defaultPASSWORD"
+        
 endmenu
