@@ -9,8 +9,7 @@ static const char TAG[] = "wifi_station";
 #define WIFI_CONNECTED_BIT 0x01
 EventGroupHandle_t wifi_event_group_handle;
 
-esp_err_t result_err;
-esp_netif_t* result_netif;
+static esp_err_t result_wifi_err;
 
 
 // Handle Wi-Fi start event and initiate connection
@@ -22,7 +21,7 @@ static void wifi_start_event_handler(void* handler_arg,
     if(event_id == WIFI_EVENT_STA_START)
     {
         ESP_LOGI(TAG, "Trying to connect %s access point...", WIFI_SSID);
-        result_err = esp_wifi_connect();
+        result_wifi_err = esp_wifi_connect();
     }
 }
 
@@ -43,16 +42,16 @@ static void ip_event_handler(void* handler_arg,
 void wifi_station_init(void)
 {
     ESP_LOGI(TAG, "Initializing TCP/IP stack");
-    result_err = esp_netif_init();
-    if(result_err != ESP_OK)
+    result_wifi_err = esp_netif_init();
+    if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to initialize TCP/IP stack.");
         return;
     }
 
     // Create the default event loop, which is a special type of loop used for system events (Wi-Fi, Bluetooth, etc.).
-    result_err = esp_event_loop_create_default();
-    if(result_err != ESP_OK)
+    result_wifi_err = esp_event_loop_create_default();
+    if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to create default event loop.");
         return;
@@ -66,15 +65,15 @@ void wifi_station_init(void)
 
     // Initialize WiFi: allocate resources for the driver and start the WiFi task.   
     wifi_init_config_t defaultConfiguration = WIFI_INIT_CONFIG_DEFAULT();
-    result_err = esp_wifi_init(&defaultConfiguration);
-    if(result_err != ESP_OK)
+    result_wifi_err = esp_wifi_init(&defaultConfiguration);
+    if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to initialize WiFi driver.");
         return;
     }
 
-    result_err = esp_wifi_set_mode(WIFI_MODE_STA);
-    if(result_err != ESP_OK)
+    result_wifi_err = esp_wifi_set_mode(WIFI_MODE_STA);
+    if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to set WiFi mode.");
         return;
@@ -88,16 +87,16 @@ void wifi_station_init(void)
                                             .threshold.authmode = WIFI_AUTH_WPA2_PSK,
                                         },
                                 };
-    result_err = esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
-    if(result_err != ESP_OK)
+    result_wifi_err = esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
+    if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to configure WiFi.");
         return;
     }
 
     // The startup function is asynchronous: it returns immediately and does not wait for the completion of the startup process.
-    result_err = esp_wifi_start();
-    if(result_err != ESP_OK)
+    result_wifi_err = esp_wifi_start();
+    if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to start WiFi driver.");
         return;
