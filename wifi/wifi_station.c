@@ -49,7 +49,7 @@ void wifi_station_init(void)
         return;
     }
 
-    // Create the default event loop, which is a special type of loop used for system events (Wi-Fi, Bluetooth, etc.).
+    ESP_LOGI(TAG, "Creating default event loop");
     result_wifi_err = esp_event_loop_create_default();
     if(result_wifi_err != ESP_OK)
     {
@@ -57,13 +57,14 @@ void wifi_station_init(void)
         return;
     }
 
-    // Create (and return pointer to) esp_netif object, register wifi handlers to the default event loop.
+    ESP_LOGI(TAG, "Create default network interface.");
     esp_netif_create_default_wifi_sta();
     
+    ESP_LOGI(TAG, "Registering event handlers");
     esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_start_event_handler, NULL, NULL);
     esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &ip_event_handler, NULL, NULL);
 
-    // Initialize WiFi: allocate resources for the driver and start the WiFi task.   
+    ESP_LOGI(TAG, "Initializing WiFi: allocate resources for the driver and start the WiFi task.");   
     wifi_init_config_t defaultConfiguration = WIFI_INIT_CONFIG_DEFAULT();
     result_wifi_err = esp_wifi_init(&defaultConfiguration);
     if(result_wifi_err != ESP_OK)
@@ -72,6 +73,7 @@ void wifi_station_init(void)
         return;
     }
 
+    ESP_LOGI(TAG, "Setting WiFi mode as station.");
     result_wifi_err = esp_wifi_set_mode(WIFI_MODE_STA);
     if(result_wifi_err != ESP_OK)
     {
@@ -79,6 +81,7 @@ void wifi_station_init(void)
         return;
     }
     
+    ESP_LOGI(TAG, "Configuring WiFi (SSID, password etc.)");
     wifi_config_t wifi_config = {
                                  .sta = {
                                             .ssid = WIFI_SSID,
@@ -95,6 +98,7 @@ void wifi_station_init(void)
     }
 
     // The startup function is asynchronous: it returns immediately and does not wait for the completion of the startup process.
+    ESP_LOGI(TAG, "Starting WiFi driver.");
     result_wifi_err = esp_wifi_start();
     if(result_wifi_err != ESP_OK)
     {
@@ -103,6 +107,7 @@ void wifi_station_init(void)
     }
 
     // Create an event group (FreeRTOS feature) used to block a task until certain conditions are met.
+    ESP_LOGI(TAG, "Creating event group.");
     wifi_event_group_handle = xEventGroupCreate();
     if(wifi_event_group_handle == NULL)
     {
@@ -111,9 +116,10 @@ void wifi_station_init(void)
     }
 
     // Block Task - Wait for connection
+    ESP_LOGI(TAG, "Waiting for connection with access point...");
     EventBits_t bits = xEventGroupWaitBits(wifi_event_group_handle, WIFI_CONNECTED_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
 
-    ESP_LOGI(TAG, "Connection successful.");
+    ESP_LOGI(TAG, "Connected to access point.");
 
 
 
