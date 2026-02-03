@@ -6,8 +6,8 @@
 
 static const char TAG[] = "wifi_station"; 
 
+#define WIFI_CONNECTED_BIT 0x01
 EventGroupHandle_t wifi_event_group_handle;
-#define WIFI_CONNECTED_BIT BIT0
 
 esp_err_t result_err;
 esp_netif_t* result_netif;
@@ -21,11 +21,12 @@ static void wifi_start_event_handler(void* handler_arg,
 {
     if(event_id == WIFI_EVENT_STA_START)
     {
+        ESP_LOGI(TAG, "Trying to connect %s access point...", WIFI_SSID);
         result_err = esp_wifi_connect();
     }
 }
 
-// After getting an IP address from the AP, set the WIFI_CONNECTED_BIT for the event group
+// Got IP address from the AP. Set the WIFI_CONNECTED_BIT for the event group
 static void ip_event_handler(void* handler_arg, 
                              esp_event_base_t event_base,
                              int32_t event_id,
@@ -41,7 +42,7 @@ static void ip_event_handler(void* handler_arg,
 
 void wifi_station_init(void)
 {
-    // Initialize TCP/IP stack
+    ESP_LOGI(TAG, "Initializing TCP/IP stack");
     result_err = esp_netif_init();
     if(result_err != ESP_OK)
     {
@@ -53,17 +54,15 @@ void wifi_station_init(void)
     result_err = esp_event_loop_create_default();
     if(result_err != ESP_OK)
     {
-        ESP_LOGE(TAG, "Failed to start default event loop.");
+        ESP_LOGE(TAG, "Failed to create default event loop.");
         return;
     }
 
-    // Create esp_netif object, register wifi handlers to the default event loop.
-    result_netif = esp_netif_create_default_wifi_sta();
-    if(result_netif != ESP_OK)
-    {
-        ESP_LOGE(TAG, "Failed to create network interface.");
-        return;
-    }
+    // Create (and return pointer to) esp_netif object, register wifi handlers to the default event loop.
+    esp_netif_create_default_wifi_sta();
+    
+    esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_start_event_handler, NULL, NULL);
+    esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &ip_event_handler, NULL, NULL);
 
     // Initialize WiFi: allocate resources for the driver and start the WiFi task.   
     wifi_init_config_t defaultConfiguration = WIFI_INIT_CONFIG_DEFAULT();
@@ -73,8 +72,6 @@ void wifi_station_init(void)
         ESP_LOGE(TAG, "Failed to initialize WiFi driver.");
         return;
     }
-    esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_start_event_handler, NULL, NULL);
-    esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_start_event_handler, NULL, NULL);
 
     result_err = esp_wifi_set_mode(WIFI_MODE_STA);
     if(result_err != ESP_OK)
@@ -113,6 +110,13 @@ void wifi_station_init(void)
         ESP_LOGE(TAG, "Failed to create event group (insufficient heap memory?).");
         return;
     }
+
+    // Block Task - Wait for connection
+    EventBits_t bits = xEventGroupWaitBits(wifi_event_group_handle, WIFI_CONNECTED_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
+
+    ESP_LOGI(TAG, "Connection successful.");
+
+
 
     
 
