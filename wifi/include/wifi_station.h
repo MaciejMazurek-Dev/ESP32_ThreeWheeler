@@ -17,7 +17,7 @@ static void ip_event_handler(void* arg,
                              int32_t event_id,
                              void* event_data);
 
-void wifi_station_init(void);
-void wifi_configure(void);
+esp_err_t wifi_station_init(void);
+
 
 #endif

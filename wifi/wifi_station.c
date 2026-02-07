@@ -3,16 +3,14 @@
 #define WIFI_SSID       CONFIG_WIFI_SSDI
 #define WIFI_PASSWORD   CONFIG_WIFI_PASSWORD
 
-
 static const char TAG[] = "wifi_station"; 
+static esp_err_t result_wifi_err;
 
 #define WIFI_CONNECTED_BIT 0x01
 EventGroupHandle_t wifi_event_group_handle;
 
-static esp_err_t result_wifi_err;
 
-
-// Handle Wi-Fi start event and initiate connection
+// Handle WIFI_EVENT
 static void wifi_start_event_handler(void* handler_arg, 
                                esp_event_base_t event_base,
                                int32_t event_id,
@@ -29,29 +27,30 @@ static void wifi_start_event_handler(void* handler_arg,
     }
 }
 
-// Got IP address from the AP. Set the WIFI_CONNECTED_BIT for the event group
+// Handle IP_EVENT
 static void ip_event_handler(void* handler_arg, 
                              esp_event_base_t event_base,
                              int32_t event_id,
                              void* event_data)
 {
+    // Got IP address from the AP -> Set the WIFI_CONNECTED_BIT for the event group
     if(event_id == IP_EVENT_STA_GOT_IP)
     {
-        ESP_LOGI(TAG, "Connected with access point. IP");
+        
         xEventGroupSetBits(wifi_event_group_handle, WIFI_CONNECTED_BIT);
     }
 }
 
 
 
-void wifi_station_init(void)
+esp_err_t wifi_station_init(void)
 {
     ESP_LOGI(TAG, "Initializing TCP/IP stack");
     result_wifi_err = esp_netif_init();
     if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to initialize TCP/IP stack.");
-        return;
+        return result_wifi_err;
     }
 
     ESP_LOGI(TAG, "Creating default event loop");
@@ -59,10 +58,10 @@ void wifi_station_init(void)
     if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to create default event loop.");
-        return;
+        return result_wifi_err;
     }
 
-    ESP_LOGI(TAG, "Create default network interface.");
+    ESP_LOGI(TAG, "Creating default network interface.");
     esp_netif_create_default_wifi_sta();
     
     ESP_LOGI(TAG, "Registering event handlers");
@@ -75,7 +74,7 @@ void wifi_station_init(void)
     if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to initialize WiFi driver.");
-        return;
+        return result_wifi_err;
     }
 
     ESP_LOGI(TAG, "Setting WiFi mode as station.");
@@ -83,7 +82,7 @@ void wifi_station_init(void)
     if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to set WiFi mode.");
-        return;
+        return result_wifi_err;
     }
     
     ESP_LOGI(TAG, "Configuring WiFi (SSID, password etc.)");
@@ -99,7 +98,7 @@ void wifi_station_init(void)
     if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to configure WiFi.");
-        return;
+        return result_wifi_err;
     }
 
     // The startup function is asynchronous, it returns immediately.
@@ -108,7 +107,7 @@ void wifi_station_init(void)
     if(result_wifi_err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to start WiFi driver.");
-        return;
+        return result_wifi_err;
     }
 
     // Create an event group (FreeRTOS feature) used to block a task until certain conditions are met.
@@ -117,20 +116,20 @@ void wifi_station_init(void)
     if(wifi_event_group_handle == NULL)
     {
         ESP_LOGE(TAG, "Failed to create event group (insufficient heap memory?).");
-        return;
+        return result_wifi_err;
     }
 
     // Block Task - Wait for successful connection
     EventBits_t bits = xEventGroupWaitBits(wifi_event_group_handle, WIFI_CONNECTED_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
 
+
     // TODO: How to handle unsuccessful connection?
 
-    ESP_LOGI(TAG, "Connected with %s access point.", WIFI_SSID);
-
-
-
+    if(bits == WIFI_CONNECTED_BIT)
+    {
+        ESP_LOGI(TAG, "Connected with access point. SSID: %s", WIFI_SSID);
+        return ESP_OK;
+    }
     
-
-
-
+    return ESP_FAIL;
 }

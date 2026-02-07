@@ -1,7 +1,5 @@
 
-#include "nvs_flash.h"
-
-#include "wifi_station.h"
+#include "main.h"
 
 static const char TAG[] = "main";
 static esp_err_t result_main_err;
