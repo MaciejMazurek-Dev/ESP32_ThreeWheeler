@@ -36,14 +36,13 @@ static void ip_event_handler(void* handler_arg,
     // Got IP address from the AP -> Set the WIFI_CONNECTED_BIT for the event group
     if(event_id == IP_EVENT_STA_GOT_IP)
     {
-        
         xEventGroupSetBits(wifi_event_group_handle, WIFI_CONNECTED_BIT);
     }
 }
 
 
 
-esp_err_t wifi_station_init(void)
+esp_err_t start_wifi(void)
 {
     ESP_LOGI(TAG, "Initializing TCP/IP stack");
     result_wifi_err = esp_netif_init();
@@ -68,7 +67,7 @@ esp_err_t wifi_station_init(void)
     esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_start_event_handler, NULL, NULL);
     esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &ip_event_handler, NULL, NULL);
 
-    ESP_LOGI(TAG, "Initializing WiFi - Allocate resources for the driver and start the WiFi task.");   
+    ESP_LOGI(TAG, "Allocating resources for WiFi driver and creating WiFi task.");   
     wifi_init_config_t defaultConfiguration = WIFI_INIT_CONFIG_DEFAULT();
     result_wifi_err = esp_wifi_init(&defaultConfiguration);
     if(result_wifi_err != ESP_OK)
@@ -130,6 +129,6 @@ esp_err_t wifi_station_init(void)
         ESP_LOGI(TAG, "Connected with access point. SSID: %s", WIFI_SSID);
         return ESP_OK;
     }
-    
+
     return ESP_FAIL;
 }

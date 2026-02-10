@@ -1,4 +1,3 @@
-//Header Guards
 #ifndef WIFI_STATION_H
 #define WIFI_STATION_H
 
@@ -17,7 +16,7 @@ static void ip_event_handler(void* arg,
                              int32_t event_id,
                              void* event_data);
 
-esp_err_t wifi_station_init(void);
+esp_err_t start_wifi(void);
 
 
 #endif

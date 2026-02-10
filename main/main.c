@@ -1,4 +1,3 @@
-
 #include "main.h"
 
 static const char TAG[] = "main";
@@ -12,5 +11,6 @@ void app_main(void)
     {
         ESP_LOGE(TAG, "Failed to initialize NVS.");
     }
-    wifi_station_init();
+    start_wifi();
+    start_server();
 }
