@@ -1,0 +1,23 @@
+menu "Motor GPIO Configuration"
+
+    config GPIO_LEFT_WHEEL
+        int "Left wheel direction pin"
+        default 23
+
+
+    config GPIO_LEFT_WHEEL_PWM
+        int "Left wheel PWM speed pin"
+        default 24
+
+
+    config GPIO_RIGHT_WHEEL
+        int "Right wheel direction pin"
+        default 25
+
+
+    config GPIO_RIGHT_WHEEL_PWM
+        int "Right wheel PWM speed pin"
+        default 26
+
+
+endmenu
