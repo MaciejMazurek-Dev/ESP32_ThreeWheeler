@@ -7,6 +7,17 @@ static esp_err_t result_err;
 
 static esp_err_t motor_uri_handler(httpd_req_t* request)
 {
+    ESP_LOGD(TAG, "Method received: %d", request->method);
+    // This handler is called twice. The first call is always an HTTP GET 
+    // to 'handshake' and upgrade the connection. We return ESP_OK to 
+    // allow the upgrade before we can start receiving actual websocket data frames.
+    if(request->method == HTTP_GET)
+    {
+        ESP_LOGI(TAG, "Handshake done. Request for connection upgrade received");
+        return ESP_OK;
+    }
+    
+
     // Struct for storing websocket frame
     httpd_ws_frame_t ws_frame;
     uint8_t *payload;
@@ -38,6 +49,7 @@ static void register_uri_handlers(httpd_handle_t server)
                                 .method = HTTP_GET,
                                 .handler = motor_uri_handler,
                                 .user_ctx = NULL,
+                                .is_websocket = true,
                             };
 
     httpd_register_uri_handler(server, &motor_uri);
