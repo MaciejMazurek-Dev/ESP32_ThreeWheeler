@@ -5,6 +5,8 @@ static esp_err_t result_main_err;
 
 void app_main(void)
 {
+    static httpd_handle_t websocket_server = NULL;
+
     ESP_LOGI(TAG, "Initializing NVS (Non-Volatile Storage).");
     result_main_err = nvs_flash_init();
     if(result_main_err != ESP_OK)
@@ -12,5 +14,5 @@ void app_main(void)
         ESP_LOGE(TAG, "Failed to initialize NVS.");
     }
     start_wifi();
-    start_server();
+    websocket_server = start_websocket_server();
 }
