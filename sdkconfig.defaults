@@ -1,11 +1,10 @@
-#
-# Websocket
-#
+#Enables WebSocket in HTTPD server component
 CONFIG_HTTPD_WS_SUPPORT=y
-#CONFIG_HTTPD_WS_PRE_HANDSHAKE_CB_SUPPORT=y
 
+# Add all debug logs into compiled source files
+CONFIG_LOG_DEFAULT_LEVEL_DEBUG=y
 
-#
-# Log Level
-#
-CONFIG_LOG_DEFAULT_LEVEL_DEBUG is not set
+# Set the actual logging verbosity level (3=INFO, 4=DEBUG)
+CONFIG_LOG_DEFAULT_LEVEL=4
+
+CONFIG_LOG_MAXIMUM_LEVEL=4
