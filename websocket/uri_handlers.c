@@ -7,21 +7,7 @@ esp_err_t motor_uri_handler(httpd_req_t* request)
 {
     if(request->method == HTTP_GET)
     {
-        char hdr_value_buffer[11];
-        result_err = httpd_req_get_hdr_value_str(request, "Upgrade", hdr_value_buffer, sizeof(hdr_value_buffer));
-        if(result_err != ESP_OK)
-        {
-            ESP_LOGE(TAG, "Failed to switch protocols");
-            return ESP_FAIL;
-        }
-        int result = strcmp(hdr_value_buffer, "websocket");
-        if(result != 0)
-        {
-            ESP_LOGE(TAG, "Protocol not supported");
-            return ESP_FAIL;
-        }
-        ESP_LOGI(TAG, "Handshake complete. Connection upgraded to WebSocket");
-        return ESP_OK;
+        return is_websocket_upgrade(request);
     }
 
     httpd_ws_frame_t ws_frame = { 0 };
@@ -56,3 +42,23 @@ esp_err_t motor_uri_handler(httpd_req_t* request)
     ESP_LOGW(TAG, "Received empty frame");
     return ESP_FAIL;
 }
+
+esp_err_t is_websocket_upgrade(httpd_req_t* request)
+{
+    char hdr_value_buffer[11];
+        result_err = httpd_req_get_hdr_value_str(request, "Upgrade", hdr_value_buffer, sizeof(hdr_value_buffer));
+        if(result_err != ESP_OK)
+        {
+            ESP_LOGE(TAG, "Failed to switch protocols");
+            return ESP_FAIL;
+        }
+        int result = strcmp(hdr_value_buffer, "websocket");
+        if(result != 0)
+        {
+            ESP_LOGE(TAG, "Protocol not supported");
+            return ESP_FAIL;
+        }
+        ESP_LOGI(TAG, "Handshake complete. Connection upgraded to WebSocket");
+        return ESP_OK;
+}
+
