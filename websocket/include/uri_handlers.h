@@ -3,9 +3,9 @@
 
 #include "esp_http_server.h"
 #include "esp_log.h"
+#include "ledc_pwm.h"
 
 esp_err_t motor_uri_handler(httpd_req_t* request);
-esp_err_t is_websocket_upgrade(httpd_req_t* request)
-
+esp_err_t is_websocket_upgrade(httpd_req_t* request);
 
 #endif

@@ -12,7 +12,7 @@ esp_err_t motor_uri_handler(httpd_req_t* request)
 
     httpd_ws_frame_t ws_frame = { 0 };
     uint8_t *payload;
-    // Set max_len to 0 to get the frame length
+    // Set max_len to 0 to get the frame length first
     result_err = httpd_ws_recv_frame(request, &ws_frame, 0);
     if(result_err != ESP_OK)
     {
@@ -37,6 +37,10 @@ esp_err_t motor_uri_handler(httpd_req_t* request)
             return ESP_FAIL;
         }
         ESP_LOGI(TAG, "Message received: %s", ws_frame.payload);
+
+        // TEST
+        set_left_motor_duty(100);
+
         return ESP_OK;
     }
     ESP_LOGW(TAG, "Received empty frame");
@@ -55,7 +59,7 @@ esp_err_t is_websocket_upgrade(httpd_req_t* request)
         int result = strcmp(hdr_value_buffer, "websocket");
         if(result != 0)
         {
-            ESP_LOGE(TAG, "Protocol not supported");
+            ESP_LOGE(TAG, "Unknown protocol");
             return ESP_FAIL;
         }
         ESP_LOGI(TAG, "Handshake complete. Connection upgraded to WebSocket");

@@ -6,6 +6,8 @@
 #include "wifi_station.h"
 #include "websocket.h"
 #include "gpio.h"
+#include "ledc_pwm.h"
+
 
 
 #endif
