@@ -4,7 +4,7 @@
 #include "driver/ledc.h"
 
 
-void set_pwm_config();
+void set_pwm_config(void);
 void set_left_motor_duty(int speed);
 
 #endif

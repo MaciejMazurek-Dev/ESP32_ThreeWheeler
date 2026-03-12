@@ -3,7 +3,7 @@
 
 #include "driver/gpio.h"
 
-void set_gpio_config();
+void set_gpio_config(void);
 
 
 #endif

@@ -6,21 +6,11 @@ menu "Motor GPIO Configuration"
 
     config LEFT_MOTOR_REVERSE
         int "Left motor reverse"
-        default 30
-
-    config LEFT_MOTOR_PWM
-        int "Left motor PWM speed pin"
-        default 28
+        default 25
 
 
     config RIGHT_MOTOR
         int "Right motor direction pin"
         default 13
-
-
-    config RIGHT_MOTOR_PWM
-        int "Right motor PWM speed pin"
-        default 27
-
 
 endmenu
