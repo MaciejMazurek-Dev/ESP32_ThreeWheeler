@@ -2,15 +2,19 @@ menu "Motor GPIO Configuration"
 
     config LEFT_MOTOR_FORWARD
         int "Left motor forward"
-        default 32
+        default 33
 
     config LEFT_MOTOR_REVERSE
         int "Left motor reverse"
         default 25
 
 
-    config RIGHT_MOTOR
+    config RIGHT_MOTOR_FORWARD
         int "Right motor direction pin"
-        default 13
+        default 26
+
+    config RIGHT_MOTOR_REVERSE
+        int "Right motor direction pin"
+        default 27
 
 endmenu

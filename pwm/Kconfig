@@ -1,0 +1,11 @@
+menu "PWM configuration"
+
+    config LM_PWM_GPIO
+        int "Left motor GPIO"
+        default 32
+
+    config RM_PWM_GPIO
+        int "Right motor GPIO"
+        default 21
+        
+endmenu

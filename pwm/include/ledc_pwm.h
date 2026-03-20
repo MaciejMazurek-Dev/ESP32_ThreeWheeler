@@ -5,6 +5,7 @@
 
 
 void set_pwm_config(void);
-void set_left_motor_duty(int speed);
+void set_left_motor(int duty);
+void set_right_motor(int duty);
 
 #endif

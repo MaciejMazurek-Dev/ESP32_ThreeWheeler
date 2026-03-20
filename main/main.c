@@ -10,6 +10,8 @@ void app_main(void)
     ESP_ERROR_CHECK(nvs_flash_init());
     
     set_gpio_config();
+    set_gpio_default_levels();
+
     set_pwm_config();
     
     start_wifi();

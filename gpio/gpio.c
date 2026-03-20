@@ -2,12 +2,11 @@
 
 #define LEFT_MOTOR_FORWARD      CONFIG_LEFT_MOTOR_FORWARD
 #define LEFT_MOTOR_REVERSE      CONFIG_LEFT_MOTOR_REVERSE
-#define LEFT_MOTOR_PWM          CONFIG_LEFT_MOTOR_PWM
 
-#define RIGHT_MOTOR     CONFIG_RIGHT_MOTOR
-#define RIGHT_MOTOR_PWM CONFIG_RIGHT_MOTOR_PWM
+#define RIGHT_MOTOR_FORWARD     CONFIG_RIGHT_MOTOR_FORWARD
+#define RIGHT_MOTOR_REVERSE     CONFIG_RIGHT_MOTOR_REVERSE
 
-#define GPIO_PIN_BITMASK ((1ULL << CONFIG_LEFT_MOTOR_FORWARD) | (1ULL << CONFIG_LEFT_MOTOR_REVERSE) | (1ULL << LEFT_MOTOR_PWM) | (1ULL << RIGHT_MOTOR) | (1ULL << RIGHT_MOTOR_PWM))
+#define GPIO_PIN_BITMASK ((1ULL << LEFT_MOTOR_FORWARD) | (1ULL << LEFT_MOTOR_REVERSE) | (1ULL << RIGHT_MOTOR_FORWARD) | (1ULL << RIGHT_MOTOR_REVERSE))
 
 
 void set_gpio_config()
@@ -20,4 +19,12 @@ void set_gpio_config()
                                     .intr_type=GPIO_INTR_DISABLE
                                  };
     gpio_config(&config_data);
+
+    
+}
+
+void set_gpio_default_levels()
+{
+    gpio_set_level(LEFT_MOTOR_FORWARD, 1);
+    gpio_set_level(RIGHT_MOTOR_FORWARD, 1);
 }

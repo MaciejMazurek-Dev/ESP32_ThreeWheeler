@@ -7,6 +7,6 @@
 
 esp_err_t motor_uri_handler(httpd_req_t *request);
 static esp_err_t check_websocket_upgrade(httpd_req_t *request);
-static esp_err_t get_payload(httpd_req_t *request, u_int8_t *out_payload);
+static esp_err_t get_payload(httpd_req_t *request, u_int8_t **out_payload);
 
 #endif

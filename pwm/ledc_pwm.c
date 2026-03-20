@@ -8,18 +8,18 @@
 #define TIMER_DECONFIGURE         false
 
 // Left motor channel configuration
-#define LM_GPIO         33
+#define LM_GPIO         CONFIG_LM_PWM_GPIO
 #define LM_CHANNEL      LEDC_CHANNEL_0
 #define LM_INTR_TYPE    LEDC_INTR_DISABLE
-#define LM_DUTY         0
+#define LM_DUTY         150
 #define LM_HPOINT       0
 #define LM_SLEEP_MODE   LEDC_SLEEP_MODE_NO_ALIVE_NO_PD
 
 // Right motor channel configuration
-#define RM_GPIO         32
+#define RM_GPIO         CONFIG_RM_PWM_GPIO
 #define RM_CHANNEL      LEDC_CHANNEL_1
 #define RM_INTR_TYPE    LEDC_INTR_DISABLE
-#define RM_DUTY         0
+#define RM_DUTY         150
 #define RM_HPOINT       0
 #define RM_SLEEP_MODE   LEDC_SLEEP_MODE_NO_ALIVE_NO_PD
 
@@ -61,3 +61,16 @@ void set_pwm_config()
                                                 };
     ledc_channel_config(&right_motor_channel);
 }
+
+void set_left_motor(int duty)
+{
+    ledc_set_duty(TIMER_SPEED_MODE, LM_CHANNEL, duty);
+    ledc_update_duty(TIMER_SPEED_MODE, LM_CHANNEL);
+}
+
+void set_right_motor(int duty)
+{
+    ledc_set_duty(TIMER_SPEED_MODE, RM_CHANNEL, duty);
+    ledc_update_duty(TIMER_SPEED_MODE, RM_CHANNEL);
+}
+
