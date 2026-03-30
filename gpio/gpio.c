@@ -8,23 +8,28 @@
 
 #define GPIO_PIN_BITMASK ((1ULL << LEFT_MOTOR_FORWARD) | (1ULL << LEFT_MOTOR_REVERSE) | (1ULL << RIGHT_MOTOR_FORWARD) | (1ULL << RIGHT_MOTOR_REVERSE))
 
+enum MOTOR
+{
+    Left_Forward =  LEFT_MOTOR_FORWARD,
+    Left_Reverse =  LEFT_MOTOR_REVERSE,
+    Right_Forward = RIGHT_MOTOR_FORWARD,
+    Right_Reverse = RIGHT_MOTOR_REVERSE,
+};     
 
-void set_gpio_config()
+static void set_config()
 {
     gpio_config_t config_data = { 
-                                    .pin_bit_mask = (1ULL << GPIO_NUM_32 | 1ULL << GPIO_NUM_25),
-                                    .mode = GPIO_MODE_INPUT_OUTPUT,
+                                    .pin_bit_mask = GPIO_PIN_BITMASK,
+                                    .mode = GPIO_MODE_OUTPUT,
                                     .pull_up_en = GPIO_PULLUP_DISABLE,
-                                    .pull_up_en = GPIO_PULLDOWN_DISABLE,
+                                    .pull_down_en = GPIO_PULLDOWN_ENABLE,
                                     .intr_type=GPIO_INTR_DISABLE
                                  };
-    gpio_config(&config_data);
-
-    
+    ESP_ERROR_CHECK(gpio_config(&config_data));    
 }
 
-void set_gpio_default_levels()
+void set_gpio(void)
 {
-    gpio_set_level(LEFT_MOTOR_FORWARD, 1);
-    gpio_set_level(RIGHT_MOTOR_FORWARD, 1);
+    set_config();
+
 }

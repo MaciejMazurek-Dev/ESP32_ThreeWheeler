@@ -80,11 +80,11 @@ esp_err_t motor_uri_handler(httpd_req_t *request)
 
     if(payload[0] == 'L')
     {
-        set_left_motor(150);
+        set_left_motor_speed(150);
         
     } else if(payload[0] == 'R')
     {
-        set_right_motor(150);
+        set_right_motor_speed(150);
     }
     free(payload);
     return ESP_OK;    

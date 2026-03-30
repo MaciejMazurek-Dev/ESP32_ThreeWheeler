@@ -24,7 +24,7 @@
 #define RM_SLEEP_MODE   LEDC_SLEEP_MODE_NO_ALIVE_NO_PD
 
 
-void set_pwm_config()
+void set_pwm(void)
 {
     ledc_timer_config_t left_motor_timer = {
                                                 .speed_mode = TIMER_SPEED_MODE,
@@ -35,7 +35,7 @@ void set_pwm_config()
                                                 .deconfigure = TIMER_DECONFIGURE
                                             };
 
-    ledc_timer_config(&left_motor_timer);
+    ESP_ERROR_CHECK(ledc_timer_config(&left_motor_timer));
 
     ledc_channel_config_t left_motor_channel = {
                                                     .gpio_num = LM_GPIO,
@@ -47,7 +47,7 @@ void set_pwm_config()
                                                     .hpoint = LM_HPOINT,
                                                     .sleep_mode = LM_SLEEP_MODE
                                                };
-    ledc_channel_config(&left_motor_channel);
+    ESP_ERROR_CHECK(ledc_channel_config(&left_motor_channel));
 
     ledc_channel_config_t right_motor_channel = {
                                                     .gpio_num = RM_GPIO,
@@ -59,18 +59,18 @@ void set_pwm_config()
                                                     .hpoint = RM_HPOINT,
                                                     .sleep_mode = RM_SLEEP_MODE
                                                 };
-    ledc_channel_config(&right_motor_channel);
+    ESP_ERROR_CHECK(ledc_channel_config(&right_motor_channel));
 }
 
-void set_left_motor(int duty)
+void set_left_motor_speed(int8_t duty)
 {
-    ledc_set_duty(TIMER_SPEED_MODE, LM_CHANNEL, duty);
-    ledc_update_duty(TIMER_SPEED_MODE, LM_CHANNEL);
+    ESP_ERROR_CHECK_WITHOUT_ABORT(ledc_set_duty(TIMER_SPEED_MODE, LM_CHANNEL, duty));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(ledc_update_duty(TIMER_SPEED_MODE, LM_CHANNEL));
 }
 
-void set_right_motor(int duty)
+void set_right_motor_speed(int8_t duty)
 {
-    ledc_set_duty(TIMER_SPEED_MODE, RM_CHANNEL, duty);
-    ledc_update_duty(TIMER_SPEED_MODE, RM_CHANNEL);
+    ESP_ERROR_CHECK_WITHOUT_ABORT(ledc_set_duty(TIMER_SPEED_MODE, RM_CHANNEL, duty));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(ledc_update_duty(TIMER_SPEED_MODE, RM_CHANNEL));
 }
 
