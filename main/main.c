@@ -9,8 +9,8 @@ void app_main(void)
     ESP_LOGI(TAG, "Initializing NVS (Non-Volatile Storage).");
     ESP_ERROR_CHECK(nvs_flash_init());
     
-    set_pwm();
-    set_gpio();
+    config_pwm();
+    config_gpio();
     
     start_wifi();
     websocket_server = start_websocket_server();

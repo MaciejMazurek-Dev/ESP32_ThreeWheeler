@@ -24,7 +24,7 @@
 #define RM_SLEEP_MODE   LEDC_SLEEP_MODE_NO_ALIVE_NO_PD
 
 
-void set_pwm(void)
+void config_pwm(void)
 {
     ledc_timer_config_t left_motor_timer = {
                                                 .speed_mode = TIMER_SPEED_MODE,

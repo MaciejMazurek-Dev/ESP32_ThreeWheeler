@@ -72,7 +72,8 @@ esp_err_t motor_uri_handler(httpd_req_t *request)
     if(result_err != ESP_OK)
     {
         return result_err;
-    } else if(payload == NULL)
+    } 
+    else if(payload == NULL)
     {
         ESP_LOGI(TAG, "Payload is empty");
         return ESP_OK;
@@ -80,11 +81,27 @@ esp_err_t motor_uri_handler(httpd_req_t *request)
 
     if(payload[0] == 'L')
     {
-        set_left_motor_speed(150);
-        
-    } else if(payload[0] == 'R')
+        set_left_motor_speed(payload[2]);
+        if(payload[1] == 'F')
+        {
+            set_motor(LEFT_MOTOR_FORWARD);
+        }
+        else if(payload[2] == 'R')
+        {
+            set_motor(RIGHT_MOTOR_REVERSE);
+        }
+    } 
+    else if(payload[0] == 'R')
     {
-        set_right_motor_speed(150);
+        set_right_motor_speed(payload[2]);
+        if(payload[1] == 'F')
+        {
+            set_motor(RIGHT_MOTOR_FORWARD);
+        }
+        else if(payload[1] == 'R')
+        {
+            set_motor(RIGHT_MOTOR_REVERSE);
+        }
     }
     free(payload);
     return ESP_OK;    
